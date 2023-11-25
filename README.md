@@ -6,7 +6,6 @@ Welcome to your project! This repository contains the code for a simple React ap
 
 The project is organized as follows:
 
-- `src/`: Source code directory
   - `components/`: React components
     - `RegisterForm.js`: Component for user registration
     - `LoginForm.js`: Component for user login
@@ -43,4 +42,4 @@ React Hook Form
 Yup
 Axios
 
-![image](relative_path_or_url_to_image)
+![image](https://github.com/mohammadmehdisalehi/React/blob/pages/public/s1.png)
