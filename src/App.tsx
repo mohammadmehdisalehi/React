@@ -7,10 +7,6 @@ import {createBrowserRouter,RouterProvider} from "react-router-dom";
 import Layout from './Components/layout';
 
 const App: FC = () => {
-  const [isLoggedIn, setLoggedIn] = React.useState(false);
-  const handleLogin = () => {
-    setLoggedIn(true);
-  };
 
   return(
     <RouterProvider router={ createBrowserRouter([

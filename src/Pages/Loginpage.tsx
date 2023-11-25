@@ -14,33 +14,39 @@ const LoginForm = ({ onLogin }) => {
     resolver: yupResolver(schema),
   });
 
-//   const onSubmit = (data) => {
-//     // Check login credentials in local storage
-//     const storedData = JSON.parse(localStorage.getItem('userData'));
-//     if (storedData && storedData.email === data.email && storedData.password === data.password) {
-//       onLogin(); // Redirect to home page or perform other actions on successful login
-//     } else {
-//       // Display error if login fails
-//       alert('Invalid email or password');
-//     }
-//   };
+  // const onSubmit = (data) => {
+  //   // Check login credentials in local storage
+  //   const existingUserData = JSON.parse(localStorage.getItem('userData')) ;
+  //   const [uData]=existingUserData;
+  //   if (existingUserData && uData.email == data.email && uData.password == data.password) {
+      
+  //     onLogin(); 
+      
+  //     // Redirect to home page or perform other actions on successful login
+  //   } else {
+  //     // Display error if login fails
+  //     alert('Invalid email or password');
+  //   }
+  // };
 // const [loginError, setLoginError] = React.useState('');
 const [loginError, setLoginError]= React.useState({
 emailError:"",
 passwordError:""
 })
   const onSubmit = (data) => {
-    // Check login credentials in local storage
-    const storedData = JSON.parse(localStorage.getItem('userData'));
-    if (storedData && storedData.email === data.email && storedData.password === data.password) {
-      onLogin(); // Redirect to home page or perform other actions on successful login
-    } else if(storedData.email != data.email) {
+   
+    const existingUserData = JSON.parse(localStorage.getItem('userData'))  ;
+    const uData = existingUserData.map(user => user.email);
+    const pData= existingUserData.map(user => user.password);
+    if(existingUserData && uData.includes(data.email) && pData.includes(data.password)) {
+      onLogin(); 
+    } else if(!uData.includes(data.email)) {
 
       setLoginError({
         ...loginError,
         emailError:"Invalid Email",
       });
-    }else if(storedData.password != data.password) {
+    }else if(!pData.includes(data.password)) {
        
         setLoginError({
             ...loginError,

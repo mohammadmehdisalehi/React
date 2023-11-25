@@ -1,26 +1,64 @@
-import React, {type FC} from "react";
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { useId } from 'react-id-generator';
+
+
 const schema = yup.object().shape({
-    name: yup.string().required('Name is required'),
-    lastName: yup.string().required('Last Name is required'),
-    age: yup.number().positive('Age must be a positive number').required('Age is required'),
-    email: yup.string().email('Invalid email').required('Email is required'),
-    password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-    repeatPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Repeat Password is required'),
-  });
+  name: yup.string().required('Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  gender: yup.string().required('Gender is required'),
+  address: yup.string().required('Address is required'),
+  phoneNumber: yup.string().matches(/^0\d{10}$/, 'Invalid phone number').required('Phone Number is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  repeatPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Repeat Password is required'),
+ 
+});
   
+ 
   const RegisterForm = () => {
+    const navigate = useNavigate();
     const { handleSubmit, control, formState: { errors } } = useForm({
       resolver: yupResolver(schema),
     });
-  
+    const [userId] = useId();
+    const id=userId;
+    const [emailError, setEmailError] = useState('');
+
     const onSubmit = (data) => {
-      // Handle form submission
+      const existingUserData = JSON.parse(localStorage.getItem('userData')) || [];
+      const emailExists = existingUserData.some(user => user.email === data.email);
+  
+      if (emailExists) {
+        setEmailError('Email already exists. Please use a different email.');
+        return;
+      }
+  
+      // Reset the email error if it was previously set
+      setEmailError('');
+
       console.log(data);
-      localStorage.setItem('userData', JSON.stringify(data));
+      const userData = { ...data, id };
+      saveUserData(userData);
+  
+
+    navigate('/login');
     };
+  
+    const saveUserData = (userData) => {
+
+      const existingUserData = JSON.parse(localStorage.getItem('userData')) || [];
+    
+      const userDataArray = Array.isArray(existingUserData) ? existingUserData : [];
+  
+      const updatedUserData = [...userDataArray, userData];
+   
+      localStorage.setItem('userData', JSON.stringify(updatedUserData));
+    };
+ 
   
     return (
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto mt-8">
@@ -45,15 +83,41 @@ const schema = yup.object().shape({
         </div>
   
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Age</label>
-          <Controller
-            name="age"
-            control={control}
-            render={({ field }) => <input type="number" {...field} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />}
-          />
-          <p className="text-red-500 text-xs italic">{errors.age?.message}</p>
-        </div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
+        <Controller
+          name="gender"
+          control={control}
+          render={({ field }) => (
+            <select {...field} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          )}
+        />
+        <p className="text-red-500 text-xs italic">{errors.gender?.message}</p>
+      </div>
   
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Address</label>
+        <Controller
+          name="address"
+          control={control}
+          render={({ field }) => <input {...field} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />}
+        />
+        <p className="text-red-500 text-xs italic">{errors.address?.message}</p>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
+        <Controller
+          name="phoneNumber"
+          control={control}
+          render={({ field }) => <input {...field} placeholder="09179234563" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />}
+        />
+        <p className="text-red-500 text-xs italic">{errors.phoneNumber?.message}</p>
+      </div>
+
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
           <Controller
@@ -61,9 +125,8 @@ const schema = yup.object().shape({
             control={control}
             render={({ field }) => <input {...field} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />}
           />
-          <p className="text-red-500 text-xs italic">{errors.email?.message}</p>
+          <p className="text-red-500 text-xs italic">{errors.email?.message || emailError}</p>
         </div>
-  
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
           <Controller
