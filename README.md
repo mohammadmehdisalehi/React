@@ -41,5 +41,12 @@ React Router DOM
 React Hook Form
 Yup
 Axios
+## Register page Image:
+![image1](https://github.com/mohammadmehdisalehi/React/blob/pages/public/s1.png)
 
-![image](https://github.com/mohammadmehdisalehi/React/blob/pages/public/s1.png)
+## Login page Image:
+![image2](https://github.com/mohammadmehdisalehi/React/blob/pages/public/s2.png)
+
+## Home page Image:
+![image2](https://github.com/mohammadmehdisalehi/React/blob/pages/public/s3.png)
+
